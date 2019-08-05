@@ -1,5 +1,8 @@
 package bobi.blog.entities;
 
+import org.codehaus.groovy.util.StringUtil;
+import org.thymeleaf.util.StringUtils;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,5 +47,10 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     public Set<User> getUsers() {
         return users;
+    }
+
+    @Transient
+    public String getSimpleName(){
+        return StringUtils.capitalize(this.getName().substring(5).toLowerCase());
     }
 }

@@ -7,6 +7,7 @@ import bobi.blog.repository.ArticleRepository;
 import bobi.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,13 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
+
+    private boolean isUserAuthorOrAdmin(Article article){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.userRepository.findByEmail(userDetails.getUsername());
+
+        return user.isAdmin() || user.isAuthor(article);
+    }
 
     @GetMapping("/article/create")
     @PreAuthorize("isAuthenticated()")
@@ -50,6 +58,12 @@ public class ArticleController {
         if(!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
+        
+        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User entityUser = this.userRepository.findByEmail(userDetails.getUsername());
+            model.addAttribute("user", entityUser);
+        }
 
         Article article = this.articleRepository.findOne(id);
 
@@ -66,6 +80,11 @@ public class ArticleController {
             return "redirect:/";
         }
         Article article = this.articleRepository.findOne(id);
+
+        if(!isUserAuthorOrAdmin(article)) {
+            return "redirect:/article/" + id;
+        }
+
         model.addAttribute("article", article);
         model.addAttribute("view", "article/edit");
 
@@ -74,12 +93,17 @@ public class ArticleController {
 
     @PostMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String edit(@PathVariable Integer id, ArticleBindingModel articleBindingModel){
+    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel){
         if(!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
 
         Article article = articleRepository.findOne(id);
+
+        if(!isUserAuthorOrAdmin(article)) {
+            return "redirect:/article/" + id;
+        }
+
         article.setTitle(articleBindingModel.getTitle());
         article.setContent(articleBindingModel.getContent());
 
@@ -97,6 +121,10 @@ public class ArticleController {
         }
         Article article = this.articleRepository.findOne(id);
 
+        if(!isUserAuthorOrAdmin(article)) {
+            return "redirect:/article/" + id;
+        }
+
         model.addAttribute("article", article);
         model.addAttribute("view", "article/delete");
 
@@ -105,12 +133,16 @@ public class ArticleController {
 
     @PostMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String delete(@PathVariable Integer id){
+    public String deleteProcess(@PathVariable Integer id){
         if(!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
 
         Article article = this.articleRepository.findOne(id);
+
+        if(!isUserAuthorOrAdmin(article)) {
+            return "redirect:/article/" + id;
+        }
         this.articleRepository.delete(article);
 
         return "redirect:/";

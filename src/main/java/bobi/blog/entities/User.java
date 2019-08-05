@@ -2,6 +2,7 @@ package bobi.blog.entities;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -82,6 +83,18 @@ public class User {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    @Transient
+    public boolean isAdmin() {
+        return this.getRoles()
+                .stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+    }
+
+    @Transient
+    public boolean isAuthor(Article article) {
+        return Objects.equals(this.getId(), article.getAuthor().getId());
     }
 
 
