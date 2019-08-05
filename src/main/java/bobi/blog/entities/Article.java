@@ -6,13 +6,18 @@ import javax.persistence.*;
 @Table(name = "articles")
 public class Article {
 
-    public Article(String title, String content, User author){
+    private String title;
+    private String content;
+    private User author;
+
+    public Article(String title, String content, User author) {
         this.title = title;
         this.content = content;
         this.author = author;
     }
 
-    public Article(){}
+    public Article() {
+    }
 
     private Integer id;
 
@@ -54,7 +59,8 @@ public class Article {
         this.author = author;
     }
 
-    private String title;
-    private String content;
-    private User author;
+    @Transient
+    public String getSummary(){
+        return this.content.substring(0,this.content.length()/2) + "...";
+    }
 }
