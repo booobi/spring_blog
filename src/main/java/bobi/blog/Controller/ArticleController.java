@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.nio.file.Path;
+
 @Controller
 public class ArticleController {
     @Autowired
@@ -55,5 +57,35 @@ public class ArticleController {
         model.addAttribute("view", "article/details");
 
         return "base-layout";
+    }
+
+    @GetMapping("article/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String edit(Model model, @PathVariable Integer id) {
+        if(!this.articleRepository.exists(id)) {
+            return "redirect:/";
+        }
+        Article article = this.articleRepository.findOne(id);
+        model.addAttribute("article", article);
+        model.addAttribute("view", "article/edit");
+
+        return "base-layout";
+    }
+
+    @PostMapping("article/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String edit(@PathVariable Integer id, ArticleBindingModel articleBindingModel){
+        if(!this.articleRepository.exists(id)) {
+            return "redirect:/";
+        }
+
+        Article article = articleRepository.findOne(id);
+        article.setTitle(articleBindingModel.getTitle());
+        article.setContent(articleBindingModel.getContent());
+
+        articleRepository.saveAndFlush(article);
+
+        return "redirect:/article/" + article.getId();
+
     }
 }
