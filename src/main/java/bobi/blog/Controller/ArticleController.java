@@ -30,7 +30,7 @@ public class ArticleController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    private boolean isUserAuthorOrAdmin(Article article){
+    private boolean isUserAuthorOrAdmin(Article article) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = this.userRepository.findByEmail(userDetails.getUsername());
 
@@ -39,7 +39,7 @@ public class ArticleController {
 
     @GetMapping("/article/create")
     @PreAuthorize("isAuthenticated()")
-    public String create(Model model){
+    public String create(Model model) {
         List<Category> categories = this.categoryRepository.findAll();
 
         model.addAttribute("categories", categories);
@@ -50,7 +50,7 @@ public class ArticleController {
 
     @PostMapping("article/create")
     @PreAuthorize("isAuthenticated()")
-    public String createProcess(ArticleBindingModel articleBindingModel){
+    public String createProcess(ArticleBindingModel articleBindingModel) {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = this.userRepository.findByEmail(principal.getUsername());
@@ -65,11 +65,11 @@ public class ArticleController {
 
     @GetMapping("article/{id}")
     public String details(Model model, @PathVariable Integer id) {
-        if(!this.articleRepository.exists(id)) {
+        if (!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
-        
-        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User entityUser = this.userRepository.findByEmail(userDetails.getUsername());
             model.addAttribute("user", entityUser);
@@ -86,15 +86,18 @@ public class ArticleController {
     @GetMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public String edit(Model model, @PathVariable Integer id) {
-        if(!this.articleRepository.exists(id)) {
+        if (!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
         Article article = this.articleRepository.findOne(id);
 
-        if(!isUserAuthorOrAdmin(article)) {
+        if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
+        List<Category> categories = this.categoryRepository.findAll();
+
+        model.addAttribute("categories", categories);
         model.addAttribute("article", article);
         model.addAttribute("view", "article/edit");
 
@@ -103,35 +106,37 @@ public class ArticleController {
 
     @PostMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel){
-        if(!this.articleRepository.exists(id)) {
+    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel) {
+        if (!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
 
         Article article = articleRepository.findOne(id);
 
-        if(!isUserAuthorOrAdmin(article)) {
+        if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
+        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
+
         article.setTitle(articleBindingModel.getTitle());
         article.setContent(articleBindingModel.getContent());
+        article.setCategory(category);
 
         articleRepository.saveAndFlush(article);
 
         return "redirect:/article/" + article.getId();
-
     }
 
     @GetMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String delete(Model model, @PathVariable Integer id){
-        if(!this.articleRepository.exists(id)) {
+    public String delete(Model model, @PathVariable Integer id) {
+        if (!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
         Article article = this.articleRepository.findOne(id);
 
-        if(!isUserAuthorOrAdmin(article)) {
+        if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
@@ -143,14 +148,14 @@ public class ArticleController {
 
     @PostMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String deleteProcess(@PathVariable Integer id){
-        if(!this.articleRepository.exists(id)) {
+    public String deleteProcess(@PathVariable Integer id) {
+        if (!this.articleRepository.exists(id)) {
             return "redirect:/";
         }
 
         Article article = this.articleRepository.findOne(id);
 
-        if(!isUserAuthorOrAdmin(article)) {
+        if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
         this.articleRepository.delete(article);
