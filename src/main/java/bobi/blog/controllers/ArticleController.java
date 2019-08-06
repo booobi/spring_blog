@@ -4,6 +4,7 @@ import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.*;
 import bobi.blog.repositories.*;
+import bobi.blog.services.CommentService;
 import bobi.blog.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,9 +33,7 @@ public class ArticleController {
     @Autowired
     private TagService tagService;
     @Autowired
-    private CommentRepository commentRepository;
-
-
+    private CommentService commentService;
 
     private boolean isUserAuthorOrAdmin(Article article) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -83,7 +82,7 @@ public class ArticleController {
         }
 
         Article article = this.articleRepository.findOne(id);
-        Set<Comment> comments = this.commentRepository.findAllByArticleOrderByIdDesc(article);
+        Set<Comment> comments = this.commentService.getAllByArticleOrderByIdDesc(article);
 
         model.addAttribute("comments", comments);
         model.addAttribute("article", article);
@@ -102,8 +101,8 @@ public class ArticleController {
         User user = this.userRepository.findByEmail(userDetails.getUsername());
 
         Article article = this.articleRepository.findOne(id);
-        Comment comment = new Comment(article, articleCommentBindingModel.getContent(), user);
-        this.commentRepository.saveAndFlush(comment);
+        this.commentService.addComment(article, articleCommentBindingModel, user);
+
 
         return "redirect:/article/" + id;
     }
