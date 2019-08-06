@@ -3,6 +3,7 @@ package bobi.blog.entities;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,6 +16,7 @@ public class Category {
 
     public Category(String name) {
         this.name = name;
+        this.articles = new HashSet<>();
     }
 
     public Category() {}
