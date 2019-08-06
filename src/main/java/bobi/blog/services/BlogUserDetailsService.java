@@ -1,7 +1,7 @@
-package bobi.blog.service;
+package bobi.blog.services;
 
 import bobi.blog.entities.User;
-import bobi.blog.repository.UserRepository;
+import bobi.blog.repositories.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

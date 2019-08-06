@@ -1,6 +1,4 @@
-package bobi.blog.bindingModel;
-
-import bobi.blog.entities.Category;
+package bobi.blog.bindingModels;
 
 import javax.validation.constraints.NotNull;
 

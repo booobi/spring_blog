@@ -1,10 +1,10 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
-import bobi.blog.bindingModel.UserBindingModel;
+import bobi.blog.bindingModels.UserBindingModel;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
-import bobi.blog.repository.RoleRepository;
-import bobi.blog.repository.UserRepository;
+import bobi.blog.repositories.RoleRepository;
+import bobi.blog.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;

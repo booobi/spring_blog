@@ -1,14 +1,14 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
-import bobi.blog.bindingModel.ArticleBindingModel;
+import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.entities.Tag;
 import bobi.blog.entities.User;
-import bobi.blog.repository.ArticleRepository;
-import bobi.blog.repository.CategoryRepository;
-import bobi.blog.repository.TagRepository;
-import bobi.blog.repository.UserRepository;
+import bobi.blog.repositories.ArticleRepository;
+import bobi.blog.repositories.CategoryRepository;
+import bobi.blog.repositories.TagRepository;
+import bobi.blog.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

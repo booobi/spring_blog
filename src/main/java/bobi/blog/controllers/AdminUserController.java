@@ -1,12 +1,12 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
-import bobi.blog.bindingModel.UserEditBingingModel;
+import bobi.blog.bindingModels.UserEditBingingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
-import bobi.blog.repository.ArticleRepository;
-import bobi.blog.repository.RoleRepository;
-import bobi.blog.repository.UserRepository;
+import bobi.blog.repositories.ArticleRepository;
+import bobi.blog.repositories.RoleRepository;
+import bobi.blog.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;

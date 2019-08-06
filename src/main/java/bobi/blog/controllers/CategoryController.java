@@ -1,11 +1,10 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
-import bobi.blog.bindingModel.CategoryBindingModel;
+import bobi.blog.bindingModels.CategoryBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
-import bobi.blog.repository.ArticleRepository;
-import bobi.blog.repository.CategoryRepository;
-import org.codehaus.groovy.util.StringUtil;
+import bobi.blog.repositories.ArticleRepository;
+import bobi.blog.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

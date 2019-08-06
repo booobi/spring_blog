@@ -1,4 +1,4 @@
-package bobi.blog.repository;
+package bobi.blog.repositories;
 
 import bobi.blog.entities.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

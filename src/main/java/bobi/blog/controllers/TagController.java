@@ -1,7 +1,7 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
 import bobi.blog.entities.Tag;
-import bobi.blog.repository.TagRepository;
+import bobi.blog.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

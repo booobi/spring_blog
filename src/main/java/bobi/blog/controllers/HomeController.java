@@ -1,8 +1,8 @@
-package bobi.blog.Controller;
+package bobi.blog.controllers;
 
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
-import bobi.blog.repository.CategoryRepository;
+import bobi.blog.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
