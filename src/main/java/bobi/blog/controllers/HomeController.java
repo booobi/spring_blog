@@ -3,6 +3,7 @@ package bobi.blog.controllers;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.repositories.CategoryRepository;
+import bobi.blog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +16,11 @@ import java.util.Set;
 @Controller
 public class HomeController {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @GetMapping("/")
     public String index(Model model) {
-        List<Category> categories = this.categoryRepository.findAll();
+        List<Category> categories = this.categoryService.getAllCategories();
 
         model.addAttribute("categories", categories);
         model.addAttribute("view", "home/index");
@@ -29,11 +30,12 @@ public class HomeController {
 
     @GetMapping("/category/{id}")
     public String listArticles(@PathVariable Integer id, Model model){
-        if(!this.categoryRepository.exists(id)) {
+        Category category = this.categoryService.getCategoryById(id);
+
+        if(category == null) {
             return "redirect:/";
         }
 
-        Category category = this.categoryRepository.findOne(id);
         Set<Article> articles = category.getArticles();
 
         model.addAttribute("articles", articles);
