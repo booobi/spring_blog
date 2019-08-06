@@ -23,11 +23,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/categories")
 public class CategoryController {
 
-    @Autowired
     private CategoryService categoryService;
+    private ArticleRepository articleRepository;
 
     @Autowired
-    private ArticleRepository articleRepository;
+    public CategoryController(CategoryService categoryService,
+                              ArticleRepository articleRepository) {
+        this.categoryService = categoryService;
+        this.articleRepository = articleRepository;
+    }
 
     @GetMapping("/")
     public String list(Model model) {

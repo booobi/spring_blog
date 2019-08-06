@@ -4,40 +4,45 @@ import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.*;
 import bobi.blog.repositories.*;
-import bobi.blog.services.CommentService;
-import bobi.blog.services.TagService;
+import bobi.blog.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
 public class ArticleController {
-    @Autowired
-    private ArticleRepository articleRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
+
+    private final ArticleService articleService;
+    private UserService userService;
+    private CategoryService categoryService;
     private TagService tagService;
-    @Autowired
     private CommentService commentService;
 
+    @Autowired
+    public ArticleController(ArticleService articleService,
+                             UserService userService,
+                             CategoryService categoryService,
+                             TagService tagService,
+                             CommentService commentService) {
+        this.articleService = articleService;
+        this.userService = userService;
+        this.categoryService = categoryService;
+        this.tagService = tagService;
+        this.commentService = commentService;
+    }
+
     private boolean isUserAuthorOrAdmin(Article article) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userRepository.findByEmail(userDetails.getUsername());
+        User user = this.userService.getCurrentUser();
 
         return user.isAdmin() || user.isAuthor(article);
     }
@@ -45,7 +50,7 @@ public class ArticleController {
     @GetMapping("/article/create")
     @PreAuthorize("isAuthenticated()")
     public String create(Model model) {
-        List<Category> categories = this.categoryRepository.findAll();
+        List<Category> categories = this.categoryService.getAllCategories();
 
         model.addAttribute("categories", categories);
         model.addAttribute("view", "article/create");
@@ -56,32 +61,25 @@ public class ArticleController {
     @PostMapping("article/create")
     @PreAuthorize("isAuthenticated()")
     public String createProcess(ArticleBindingModel articleBindingModel) {
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = this.userRepository.findByEmail(principal.getUsername());
-        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
-        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
-
-        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category, tags);
-
-        this.articleRepository.saveAndFlush(article);
+        this.articleService.addArticle(articleBindingModel, this.userService, this.categoryService, this.tagService);
 
         return "redirect:/";
     }
 
     @GetMapping("article/{id}")
     public String details(Model model, @PathVariable Integer id) {
-        if (!this.articleRepository.exists(id)) {
+
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
 
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User entityUser = this.userRepository.findByEmail(userDetails.getUsername());
+            User entityUser = this.userService.getCurrentUser();
             model.addAttribute("user", entityUser);
         }
 
-        Article article = this.articleRepository.findOne(id);
         Set<Comment> comments = this.commentService.getAllByArticleOrderByIdDesc(article);
 
         model.addAttribute("comments", comments);
@@ -93,16 +91,15 @@ public class ArticleController {
 
     @PostMapping("article/{id}")
     public String detailsCommentProcess(@PathVariable Integer id, ArticleCommentBindingModel articleCommentBindingModel) {
-        if (!this.articleRepository.exists(id)) {
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userRepository.findByEmail(userDetails.getUsername());
+        User user = this.userService.getCurrentUser();
 
-        Article article = this.articleRepository.findOne(id);
         this.commentService.addComment(article, articleCommentBindingModel, user);
-
 
         return "redirect:/article/" + id;
     }
@@ -110,16 +107,17 @@ public class ArticleController {
     @GetMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public String edit(Model model, @PathVariable Integer id) {
-        if (!this.articleRepository.exists(id)) {
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
-        Article article = this.articleRepository.findOne(id);
 
         if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
-        List<Category> categories = this.categoryRepository.findAll();
+        List<Category> categories = this.categoryService.getAllCategories();
 
         String tagString = article.getTags().stream().map(Tag::getName).collect(Collectors.joining(", "));
 
@@ -134,26 +132,17 @@ public class ArticleController {
     @PostMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel) {
-        if (!this.articleRepository.exists(id)) {
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
-
-        Article article = articleRepository.findOne(id);
 
         if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
-        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
-
-        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
-
-        article.setTitle(articleBindingModel.getTitle());
-        article.setContent(articleBindingModel.getContent());
-        article.setCategory(category);
-        article.setTags(tags);
-
-        articleRepository.saveAndFlush(article);
+//        this.articleService.editArticle(article, articleBindingModel, );
 
         return "redirect:/article/" + article.getId();
     }
@@ -161,10 +150,11 @@ public class ArticleController {
     @GetMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String delete(Model model, @PathVariable Integer id) {
-        if (!this.articleRepository.exists(id)) {
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
-        Article article = this.articleRepository.findOne(id);
 
         if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
@@ -179,16 +169,16 @@ public class ArticleController {
     @PostMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String deleteProcess(@PathVariable Integer id) {
-        if (!this.articleRepository.exists(id)) {
+        Article article = this.articleService.getArticleById(id);
+
+        if (article == null) {
             return "redirect:/";
         }
-
-        Article article = this.articleRepository.findOne(id);
 
         if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
-        this.articleRepository.delete(article);
+
 
         return "redirect:/";
     }

@@ -15,8 +15,12 @@ import java.util.Set;
 
 @Controller
 public class HomeController {
-    @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    public HomeController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("/")
     public String index(Model model) {

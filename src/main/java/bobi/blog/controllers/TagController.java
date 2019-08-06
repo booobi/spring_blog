@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class TagController {
-    @Autowired
     private TagService tagService;
+
+    @Autowired
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
+    }
+
 
     @GetMapping("/tag/{name}")
     private String articlesWithTag(@PathVariable String name, Model model) {
