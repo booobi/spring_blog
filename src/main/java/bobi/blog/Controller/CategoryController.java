@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
@@ -56,5 +57,35 @@ public class CategoryController {
         this.categoryRepository.saveAndFlush(category);
 
         return "redirect:/admin/categories/";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        if(!this.categoryRepository.exists(id)) {
+            return "redirect:/admin/categories/";
+        }
+
+        Category category = this.categoryRepository.findOne(id);
+
+        model.addAttribute("category", category);
+        model.addAttribute("view", "admin/category/edit");
+
+        return "base-layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) {
+        if(!this.categoryRepository.exists(id)) {
+            return "redirect:/admin/categories/";
+        }
+
+        Category category = this.categoryRepository.findOne(id);
+
+        category.setName(categoryBindingModel.getName());
+
+        this.categoryRepository.saveAndFlush(category);
+
+        return "redirect:/admin/categories/";
+
     }
 }
