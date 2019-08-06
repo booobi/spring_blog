@@ -23,4 +23,12 @@ public class HomeController {
 
         return "base-layout";
     }
+
+    @GetMapping("/error/403")
+    public String accessDenied(Model model){
+
+        model.addAttribute("view", "error/403");
+
+        return "base-layout";
+    }
 }
