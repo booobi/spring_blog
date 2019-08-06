@@ -1,5 +1,7 @@
 package bobi.blog.bindingModel;
 
+import bobi.blog.entities.Category;
+
 import javax.validation.constraints.NotNull;
 
 public class ArticleBindingModel {
@@ -8,6 +10,8 @@ public class ArticleBindingModel {
     private String title;
     @NotNull
     private String content;
+    @NotNull
+    private Integer categoryId;
 
     public String getTitle() {
         return title;
@@ -25,5 +29,11 @@ public class ArticleBindingModel {
         this.content = content;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
 
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
 }

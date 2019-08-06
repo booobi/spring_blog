@@ -2,8 +2,10 @@ package bobi.blog.Controller;
 
 import bobi.blog.bindingModel.ArticleBindingModel;
 import bobi.blog.entities.Article;
+import bobi.blog.entities.Category;
 import bobi.blog.entities.User;
 import bobi.blog.repository.ArticleRepository;
+import bobi.blog.repository.CategoryRepository;
 import bobi.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Controller
 public class ArticleController {
@@ -24,6 +27,8 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private boolean isUserAuthorOrAdmin(Article article){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -35,6 +40,9 @@ public class ArticleController {
     @GetMapping("/article/create")
     @PreAuthorize("isAuthenticated()")
     public String create(Model model){
+        List<Category> categories = this.categoryRepository.findAll();
+
+        model.addAttribute("categories", categories);
         model.addAttribute("view", "article/create");
 
         return "base-layout";
@@ -44,9 +52,11 @@ public class ArticleController {
     @PreAuthorize("isAuthenticated()")
     public String createProcess(ArticleBindingModel articleBindingModel){
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userRepository.findByEmail(principal.getUsername());
 
-        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user);
+        User user = this.userRepository.findByEmail(principal.getUsername());
+        Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
+
+        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category);
 
         this.articleRepository.saveAndFlush(article);
 
