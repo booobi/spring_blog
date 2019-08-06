@@ -4,8 +4,8 @@ import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.*;
 import bobi.blog.repositories.*;
+import bobi.blog.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,26 +30,11 @@ public class ArticleController {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private TagRepository tagRepository;
+    private TagService tagService;
     @Autowired
     private CommentRepository commentRepository;
 
-    private Set<Tag> findTagsFromString(String tagString) {
-        Set<Tag> tagSet = new HashSet<>();
 
-        String[] tagNames = tagString.split(",\\s*");
-
-        for (String tagName : tagNames) {
-            Tag currentTag = this.tagRepository.findByName(tagName);
-            if (currentTag == null) {
-                currentTag = new Tag(tagName);
-                this.tagRepository.saveAndFlush(currentTag);
-            }
-            tagSet.add(currentTag);
-        }
-
-        return tagSet;
-    }
 
     private boolean isUserAuthorOrAdmin(Article article) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -76,7 +61,7 @@ public class ArticleController {
 
         User user = this.userRepository.findByEmail(principal.getUsername());
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
-        Set<Tag> tags = this.findTagsFromString(articleBindingModel.getTagString());
+        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
 
         Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category, tags);
 
@@ -162,7 +147,7 @@ public class ArticleController {
 
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
 
-        Set<Tag> tags = findTagsFromString(articleBindingModel.getTagString());
+        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
 
         article.setTitle(articleBindingModel.getTitle());
         article.setContent(articleBindingModel.getContent());
