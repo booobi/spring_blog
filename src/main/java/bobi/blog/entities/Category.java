@@ -13,6 +13,12 @@ public class Category {
     private String name;
     private Set<Article> articles;
 
+    public Category(String name) {
+        this.name = name;
+    }
+
+    public Category() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {

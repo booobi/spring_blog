@@ -1,13 +1,17 @@
 package bobi.blog.Controller;
 
+import bobi.blog.bindingModel.CategoryBindingModel;
 import bobi.blog.entities.Category;
 import bobi.blog.repository.ArticleRepository;
 import bobi.blog.repository.CategoryRepository;
+import org.codehaus.groovy.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -32,5 +36,25 @@ public class CategoryController {
         model.addAttribute("view", "admin/category/list");
 
         return "base-layout";
+    }
+
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("view", "admin/category/create");
+
+        return "base-layout";
+    }
+
+    @PostMapping("/create")
+    public String createProcess(CategoryBindingModel categoryBindingModel) {
+        if (StringUtils.isEmpty(categoryBindingModel.getName())) {
+            return "redirect:/admin/categories/create";
+        }
+
+        Category category = new Category(categoryBindingModel.getName());
+
+        this.categoryRepository.saveAndFlush(category);
+
+        return "redirect:/admin/categories/";
     }
 }
