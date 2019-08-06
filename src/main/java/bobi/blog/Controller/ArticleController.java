@@ -3,9 +3,11 @@ package bobi.blog.Controller;
 import bobi.blog.bindingModel.ArticleBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
+import bobi.blog.entities.Tag;
 import bobi.blog.entities.User;
 import bobi.blog.repository.ArticleRepository;
 import bobi.blog.repository.CategoryRepository;
+import bobi.blog.repository.TagRepository;
 import bobi.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class ArticleController {
@@ -29,6 +33,25 @@ public class ArticleController {
     private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private TagRepository tagRepository;
+
+    private Set<Tag> findTagsFromString(String tagString){
+        Set<Tag> tagSet = new HashSet<>();
+
+        String[] tagNames = tagString.split(",\\s*");
+
+        for(String tagName : tagNames) {
+            Tag currentTag = this.tagRepository.findByName(tagName);
+            if(currentTag == null) {
+                currentTag = new Tag(tagName);
+                this.tagRepository.saveAndFlush(currentTag);
+            }
+            tagSet.add(currentTag);
+        }
+
+        return tagSet;
+    }
 
     private boolean isUserAuthorOrAdmin(Article article) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -55,8 +78,9 @@ public class ArticleController {
 
         User user = this.userRepository.findByEmail(principal.getUsername());
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
+        Set<Tag> tags = this.findTagsFromString(articleBindingModel.getTagString());
 
-        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category);
+        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category, tags);
 
         this.articleRepository.saveAndFlush(article);
 
@@ -97,6 +121,9 @@ public class ArticleController {
 
         List<Category> categories = this.categoryRepository.findAll();
 
+        String tagString = article.getTags().stream().map(Tag::getName).collect(Collectors.joining(", "));
+
+        model.addAttribute("tags", tagString);
         model.addAttribute("categories", categories);
         model.addAttribute("article", article);
         model.addAttribute("view", "article/edit");
@@ -119,9 +146,12 @@ public class ArticleController {
 
         Category category = this.categoryRepository.findOne(articleBindingModel.getCategoryId());
 
+        Set<Tag> tags = findTagsFromString(articleBindingModel.getTagString());
+
         article.setTitle(articleBindingModel.getTitle());
         article.setContent(articleBindingModel.getContent());
         article.setCategory(category);
+        article.setTags(tags);
 
         articleRepository.saveAndFlush(article);
 
