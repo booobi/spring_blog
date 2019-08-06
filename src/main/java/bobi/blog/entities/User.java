@@ -14,6 +14,7 @@ public class User {
     private String password;
     private Set<Role> roles;
     private Set<Article> articles;
+    private Set<Comment> comments;
 
     public User(String email, String fullName, String password) {
         this.email = email;
@@ -83,6 +84,15 @@ public class User {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    @OneToMany(mappedBy = "author")
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Transient

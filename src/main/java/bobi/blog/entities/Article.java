@@ -12,6 +12,7 @@ public class Article {
     private User author;
     private Category category;
     private Set<Tag> tags;
+    private Set<Comment> comments;
 
     public Article(String title, String content, User author, Category category, Set<Tag> tags) {
         this.title = title;
@@ -82,6 +83,15 @@ public class Article {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @OneToMany(mappedBy = "article")
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Transient
