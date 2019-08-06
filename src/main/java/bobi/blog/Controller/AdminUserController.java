@@ -1,6 +1,7 @@
 package bobi.blog.Controller;
 
 import bobi.blog.bindingModel.UserEditBingingModel;
+import bobi.blog.entities.Article;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
 import bobi.blog.repository.ArticleRepository;
@@ -86,6 +87,37 @@ public class AdminUserController {
 
         user.setRoles(roles);
         this.userRepository.saveAndFlush(user);
+        return "redirect:/admin/users/";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, Model model) {
+        if(!this.userRepository.exists(id)){
+            return "redirect:/admin/users";
+        }
+
+        User user = this.userRepository.findOne(id);
+
+        model.addAttribute("user", user);
+        model.addAttribute("view", "admin/user/delete");
+
+        return "base-layout";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteProcess(@PathVariable Integer id){
+        if(!this.userRepository.exists(id)){
+            return "redirect:/admin/users/";
+        }
+
+        User user = this.userRepository.findOne(id);
+
+        for(Article article : user.getArticles()) {
+            this.articleRepository.delete(article);
+        }
+
+        this.userRepository.delete(user);
+
         return "redirect:/admin/users/";
     }
 }
