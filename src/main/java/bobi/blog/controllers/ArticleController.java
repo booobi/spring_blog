@@ -1,15 +1,11 @@
 package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.ArticleBindingModel;
-import bobi.blog.entities.Article;
-import bobi.blog.entities.Category;
-import bobi.blog.entities.Tag;
-import bobi.blog.entities.User;
-import bobi.blog.repositories.ArticleRepository;
-import bobi.blog.repositories.CategoryRepository;
-import bobi.blog.repositories.TagRepository;
-import bobi.blog.repositories.UserRepository;
+import bobi.blog.bindingModels.ArticleCommentBindingModel;
+import bobi.blog.entities.*;
+import bobi.blog.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,15 +31,17 @@ public class ArticleController {
     private CategoryRepository categoryRepository;
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
-    private Set<Tag> findTagsFromString(String tagString){
+    private Set<Tag> findTagsFromString(String tagString) {
         Set<Tag> tagSet = new HashSet<>();
 
         String[] tagNames = tagString.split(",\\s*");
 
-        for(String tagName : tagNames) {
+        for (String tagName : tagNames) {
             Tag currentTag = this.tagRepository.findByName(tagName);
-            if(currentTag == null) {
+            if (currentTag == null) {
                 currentTag = new Tag(tagName);
                 this.tagRepository.saveAndFlush(currentTag);
             }
@@ -100,11 +98,29 @@ public class ArticleController {
         }
 
         Article article = this.articleRepository.findOne(id);
+        Set<Comment> comments = this.commentRepository.findAllByArticleOrderByIdDesc(article);
 
+        model.addAttribute("comments", comments);
         model.addAttribute("article", article);
         model.addAttribute("view", "article/details");
 
         return "base-layout";
+    }
+
+    @PostMapping("article/{id}")
+    public String detailsCommentProcess(@PathVariable Integer id, ArticleCommentBindingModel articleCommentBindingModel) {
+        if (!this.articleRepository.exists(id)) {
+            return "redirect:/";
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.userRepository.findByEmail(userDetails.getUsername());
+
+        Article article = this.articleRepository.findOne(id);
+        Comment comment = new Comment(article, articleCommentBindingModel.getContent(), user);
+        this.commentRepository.saveAndFlush(comment);
+
+        return "redirect:/article/" + id;
     }
 
     @GetMapping("article/edit/{id}")

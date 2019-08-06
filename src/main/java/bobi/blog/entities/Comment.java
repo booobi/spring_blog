@@ -6,12 +6,14 @@ import javax.persistence.*;
 @Table(name = "comments")
 public class Comment {
     private Integer id;
+    private Article article;
     private String content;
     private User author;
-    private Article article;
 
-    public Comment(String content) {
-        this.content = content;
+    public Comment(Article article, String content, User author) {
+        this.article = article;
+        this.setContent(content);
+        this.author = author;
     }
 
     public Comment(){}

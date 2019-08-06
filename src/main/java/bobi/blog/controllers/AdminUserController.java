@@ -72,9 +72,7 @@ public class AdminUserController {
             if (userEditBingingModel.getPassword().equals(userEditBingingModel.getConfirmPassword())) {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 user.setPassword(bCryptPasswordEncoder.encode(userEditBingingModel.getPassword()));
-
             }
-
         }
         user.setFullName(userEditBingingModel.getFullName());
         user.setEmail(userEditBingingModel.getEmail());

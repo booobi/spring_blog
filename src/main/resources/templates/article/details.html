@@ -29,9 +29,33 @@
                         </div>
                     </footer>
                 </article>
+
+                <form class="form-horizontal" sec:authorize="isAuthenticated()" th:action="@{/article/{id}(id = ${article.id})}" method="POST">
+                    <fieldset>
+                        <legend>New Comment</legend>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="comment_content">Content</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" rows="6" id="comment_content" name="content"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-4">
+                                <a class="btn btn-default" th:href="@{/}">Cancel</a>
+                                <input type="submit" class="btn btn-primary" value="Submit"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
                 <th:block th:each="comment : ${comments}">
-                    <p th:text="${comment.content}"></p>
-                    <small th:text="${comment.author}"></small>
+                    <div>
+                        <small th:text="${comment.author.getFullName()}"></small>
+                        <p th:text="${comment.content}"></p>
+                        <hr />
+                    </div>
 
                 </th:block>
             </div>

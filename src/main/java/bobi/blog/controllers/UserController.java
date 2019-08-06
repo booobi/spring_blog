@@ -3,14 +3,13 @@ package bobi.blog.controllers;
 import bobi.blog.bindingModels.UserBindingModel;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
-import bobi.blog.repositories.RoleRepository;
-import bobi.blog.repositories.UserRepository;
+import bobi.blog.services.RoleService;
+import bobi.blog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserController {
-    @Autowired
-    private RoleRepository roleRepository;
+    private final UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -42,22 +42,14 @@ public class UserController {
         if(!userBindingModel.getPassword().equals(userBindingModel.getConfirmPassword())) {
             return "redirect:/register";
         }
-
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        User user = new User(userBindingModel.getEmail(), userBindingModel.getFullName(), bCryptPasswordEncoder.encode(userBindingModel.getPassword()));
-        Role userRole = this.roleRepository.findByName("ROLE_USER");
-        user.addRole(userRole);
-        this.userRepository.saveAndFlush(user);
-
+        this.userService.register(userBindingModel);
         return "redirect:/login";
     }
 
     @GetMapping("/login")
     public String login(Model model){
         model.addAttribute("view", "user/login");
-
         return "base-layout";
-
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
@@ -74,12 +66,10 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public String profilePage(Model model) {
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userRepository.findByEmail(principal.getUsername());
+        User user = this.userService.getCurrentUser();
 
         model.addAttribute("user", user);
         model.addAttribute("view", "user/profile");
-
         return "base-layout";
     }
 }
