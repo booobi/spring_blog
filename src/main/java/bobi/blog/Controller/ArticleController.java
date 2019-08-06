@@ -126,7 +126,7 @@ public class ArticleController {
         }
 
         model.addAttribute("article", article);
-        model.addAttribute("view", "article/delete");
+        model.addAttribute("view", "article/delete.html");
 
         return "base-layout";
     }

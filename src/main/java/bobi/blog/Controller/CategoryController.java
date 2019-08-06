@@ -1,6 +1,7 @@
 package bobi.blog.Controller;
 
 import bobi.blog.bindingModel.CategoryBindingModel;
+import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.repository.ArticleRepository;
 import bobi.blog.repository.CategoryRepository;
@@ -74,7 +75,7 @@ public class CategoryController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) {
+    public String editProcess(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) {
         if(!this.categoryRepository.exists(id)) {
             return "redirect:/admin/categories/";
         }
@@ -87,5 +88,35 @@ public class CategoryController {
 
         return "redirect:/admin/categories/";
 
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, Model model) {
+        if(!this.categoryRepository.exists(id)){
+            return "redirect:/admin/categories/";
+        }
+
+        Category category = this.categoryRepository.findOne(id);
+
+        model.addAttribute("category", category);
+        model.addAttribute("view", "admin/category/delete");
+
+        return "base-layout";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteProcess(@PathVariable Integer id) {
+        if(!this.categoryRepository.exists(id)){
+            return "redirect:/admin/categories/";
+        }
+
+        Category category = this.categoryRepository.findOne(id);
+
+        for(Article article : category.getArticles()) {
+            this.articleRepository.delete(article);
+        }
+        this.categoryRepository.delete(category);
+
+        return "redirect:/admin/categories/";
     }
 }

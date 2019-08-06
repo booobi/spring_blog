@@ -99,7 +99,7 @@ public class AdminUserController {
         User user = this.userRepository.findOne(id);
 
         model.addAttribute("user", user);
-        model.addAttribute("view", "admin/user/delete");
+        model.addAttribute("view", "admin/user/delete.html");
 
         return "base-layout";
     }
