@@ -1,7 +1,5 @@
 package bobi.blog.entities;
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

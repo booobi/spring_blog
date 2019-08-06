@@ -5,6 +5,7 @@ import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.repositories.ArticleRepository;
 import bobi.blog.repositories.CategoryRepository;
+import bobi.blog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/categories")
 public class CategoryController {
+
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -30,7 +32,7 @@ public class CategoryController {
     @GetMapping("/")
     public String list(Model model) {
 
-        List<Category> categories = this.categoryRepository.findAll();
+        List<Category> categories = this.categoryService.getAllCategories();
         categories.stream().sorted(Comparator.comparingInt(Category::getId)).collect(Collectors.toList());
 
         model.addAttribute("categories", categories);
@@ -52,20 +54,18 @@ public class CategoryController {
             return "redirect:/admin/categories/create";
         }
 
-        Category category = new Category(categoryBindingModel.getName());
-
-        this.categoryRepository.saveAndFlush(category);
+        this.categoryService.addCategory(categoryBindingModel);
 
         return "redirect:/admin/categories/";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        if(!this.categoryRepository.exists(id)) {
+        Category category = this.categoryService.getCategoryById(id);
+
+        if(category == null) {
             return "redirect:/admin/categories/";
         }
-
-        Category category = this.categoryRepository.findOne(id);
 
         model.addAttribute("category", category);
         model.addAttribute("view", "admin/category/edit");
@@ -75,15 +75,12 @@ public class CategoryController {
 
     @PostMapping("/edit/{id}")
     public String editProcess(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) {
-        if(!this.categoryRepository.exists(id)) {
+        Category category = this.categoryService.getCategoryById(id);
+
+        if(category == null) {
             return "redirect:/admin/categories/";
         }
-
-        Category category = this.categoryRepository.findOne(id);
-
-        category.setName(categoryBindingModel.getName());
-
-        this.categoryRepository.saveAndFlush(category);
+        this.categoryService.editCategory(category, categoryBindingModel);
 
         return "redirect:/admin/categories/";
 
@@ -91,11 +88,12 @@ public class CategoryController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id, Model model) {
-        if(!this.categoryRepository.exists(id)){
+
+        Category category = this.categoryService.getCategoryById(id);
+
+        if(category == null){
             return "redirect:/admin/categories/";
         }
-
-        Category category = this.categoryRepository.findOne(id);
 
         model.addAttribute("category", category);
         model.addAttribute("view", "admin/category/delete");
@@ -105,16 +103,17 @@ public class CategoryController {
 
     @PostMapping("/delete/{id}")
     public String deleteProcess(@PathVariable Integer id) {
-        if(!this.categoryRepository.exists(id)){
+
+        Category category = this.categoryService.getCategoryById(id);
+
+        if(category == null){
             return "redirect:/admin/categories/";
         }
-
-        Category category = this.categoryRepository.findOne(id);
 
         for(Article article : category.getArticles()) {
             this.articleRepository.delete(article);
         }
-        this.categoryRepository.delete(category);
+        this.categoryService.deleteCategory(category);
 
         return "redirect:/admin/categories/";
     }
