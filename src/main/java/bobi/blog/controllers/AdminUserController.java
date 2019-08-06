@@ -2,9 +2,11 @@ package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.UserEditBingingModel;
 import bobi.blog.entities.Article;
+import bobi.blog.entities.Comment;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
 import bobi.blog.repositories.ArticleRepository;
+import bobi.blog.repositories.CommentRepository;
 import bobi.blog.repositories.RoleRepository;
 import bobi.blog.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class AdminUserController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @GetMapping("/")
     public String listUsers(Model model) {
@@ -112,6 +117,10 @@ public class AdminUserController {
 
         for(Article article : user.getArticles()) {
             this.articleRepository.delete(article);
+        }
+
+        for(Comment comment : user.getComments()){
+            this.commentRepository.delete(comment);
         }
 
         this.userRepository.delete(user);

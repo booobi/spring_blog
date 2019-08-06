@@ -25,7 +25,8 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void addComment(Article article, ArticleCommentBindingModel articleCommentBindingModel, User user) {
+    public void addComment(Article article, ArticleCommentBindingModel articleCommentBindingModel, UserService userService) {
+        User user = userService.getCurrentUser();
         Comment comment = new Comment(article, articleCommentBindingModel.getContent(), user);
         this.commentRepository.saveAndFlush(comment);
     }

@@ -3,7 +3,6 @@ package bobi.blog.controllers;
 import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.*;
-import bobi.blog.repositories.*;
 import bobi.blog.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +40,7 @@ public class ArticleController {
         this.commentService = commentService;
     }
 
+    //TODO: move this to user service
     private boolean isUserAuthorOrAdmin(Article article) {
         User user = this.userService.getCurrentUser();
 
@@ -77,6 +77,7 @@ public class ArticleController {
 
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             User entityUser = this.userService.getCurrentUser();
+            //TODO: map to user view model
             model.addAttribute("user", entityUser);
         }
 
@@ -97,9 +98,7 @@ public class ArticleController {
             return "redirect:/";
         }
 
-        User user = this.userService.getCurrentUser();
-
-        this.commentService.addComment(article, articleCommentBindingModel, user);
+        this.commentService.addComment(article, articleCommentBindingModel, this.userService);
 
         return "redirect:/article/" + id;
     }
@@ -142,7 +141,7 @@ public class ArticleController {
             return "redirect:/article/" + id;
         }
 
-//        this.articleService.editArticle(article, articleBindingModel, );
+        this.articleService.editArticle(article, articleBindingModel, categoryService, tagService);
 
         return "redirect:/article/" + article.getId();
     }
@@ -178,7 +177,6 @@ public class ArticleController {
         if (!isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
-
 
         return "redirect:/";
     }
