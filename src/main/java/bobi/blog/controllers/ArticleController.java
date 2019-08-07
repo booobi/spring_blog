@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private UserService userService;
-    private CategoryService categoryService;
-    private TagService tagService;
-    private CommentService commentService;
+    private final UserService userService;
+    private final CategoryService categoryService;
+    private final TagService tagService;
+    private final CommentService commentService;
 
     @Autowired
     public ArticleController(ArticleService articleService,
@@ -61,7 +61,8 @@ public class ArticleController {
     @PostMapping("article/create")
     @PreAuthorize("isAuthenticated()")
     public String createProcess(ArticleBindingModel articleBindingModel) {
-        this.articleService.addArticle(articleBindingModel, this.userService, this.categoryService, this.tagService);
+        User author = this.userService.getCurrentUser();
+        this.articleService.addArticle(articleBindingModel, author);
 
         return "redirect:/";
     }

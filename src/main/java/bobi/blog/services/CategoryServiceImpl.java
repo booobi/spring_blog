@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -25,7 +25,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category getCategoryById(Integer id) {
-        return this.categoryRepository.getOne(id);
+        return this.categoryRepository.findOne(id);
     }
 
     @Override

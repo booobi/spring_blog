@@ -1,7 +1,6 @@
 package bobi.blog.services;
 
 import bobi.blog.bindingModels.ArticleBindingModel;
-import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.entities.Tag;
@@ -14,20 +13,24 @@ import java.util.Set;
 
 @Service
 public class ArticleServiceImp implements ArticleService {
-
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
+    private final CategoryService categoryService;
+    private final TagService tagService;
 
     @Autowired
-    public ArticleServiceImp(ArticleRepository articleRepository) {
+    public ArticleServiceImp(ArticleRepository articleRepository,
+                             CategoryService categoryService,
+                             TagService tagService) {
         this.articleRepository = articleRepository;
+        this.categoryService = categoryService;
+        this.tagService = tagService;
     }
 
     @Override
-    public void addArticle(ArticleBindingModel articleBindingModel, UserService userService, CategoryService categoryService, TagService tagService) {
-        User user = userService.getCurrentUser();
-        Category category = categoryService.getCategoryById(articleBindingModel.getCategoryId());
-        Set<Tag> tags = tagService.findTagsFromString(articleBindingModel.getTagString());
-        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), user, category, tags);
+    public void addArticle(ArticleBindingModel articleBindingModel, User author) {
+        Category category = this.categoryService.getCategoryById(articleBindingModel.getCategoryId());
+        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
+        Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), author, category, tags);
         this.articleRepository.saveAndFlush(article);
     }
 
