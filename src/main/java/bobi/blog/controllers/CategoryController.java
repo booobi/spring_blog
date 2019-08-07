@@ -1,9 +1,9 @@
 package bobi.blog.controllers;
 
-import bobi.blog.models.bindingModels.CategoryBindingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
+import bobi.blog.models.bindingModels.CategoryBindingModel;
 import bobi.blog.services.ArticleService;
 import bobi.blog.services.CategoryService;
 import javassist.NotFoundException;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/categories")

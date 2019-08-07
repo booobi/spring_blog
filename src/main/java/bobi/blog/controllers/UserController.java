@@ -1,8 +1,8 @@
 package bobi.blog.controllers;
 
-import bobi.blog.models.bindingModels.UserBindingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.User;
+import bobi.blog.models.bindingModels.UserBindingModel;
 import bobi.blog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

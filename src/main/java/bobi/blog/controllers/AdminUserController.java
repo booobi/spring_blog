@@ -1,9 +1,9 @@
 package bobi.blog.controllers;
 
-import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
+import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.services.RoleService;
 import bobi.blog.services.UserService;
 import javassist.NotFoundException;

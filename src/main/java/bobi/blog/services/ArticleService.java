@@ -1,8 +1,8 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.ArticleBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.User;
+import bobi.blog.models.bindingModels.ArticleBindingModel;
 import javassist.NotFoundException;
 
 public interface ArticleService {

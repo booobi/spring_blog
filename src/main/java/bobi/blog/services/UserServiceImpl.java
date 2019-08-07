@@ -1,13 +1,13 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.UserBindingModel;
-import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Comment;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
-import bobi.blog.repositories.UserRepository;
+import bobi.blog.models.bindingModels.UserBindingModel;
+import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.models.viewModels.UserViewModel;
+import bobi.blog.repositories.UserRepository;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

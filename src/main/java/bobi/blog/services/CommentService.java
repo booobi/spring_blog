@@ -1,9 +1,9 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Comment;
 import bobi.blog.entities.User;
+import bobi.blog.models.bindingModels.ArticleCommentBindingModel;
 
 import java.util.Set;
 

@@ -1,7 +1,7 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.CategoryBindingModel;
 import bobi.blog.entities.Category;
+import bobi.blog.models.bindingModels.CategoryBindingModel;
 import javassist.NotFoundException;
 
 import java.util.List;

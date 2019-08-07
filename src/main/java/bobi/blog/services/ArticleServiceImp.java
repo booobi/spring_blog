@@ -1,7 +1,7 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.ArticleBindingModel;
 import bobi.blog.entities.*;
+import bobi.blog.models.bindingModels.ArticleBindingModel;
 import bobi.blog.repositories.ArticleRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

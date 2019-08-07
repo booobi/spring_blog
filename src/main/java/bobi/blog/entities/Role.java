@@ -1,6 +1,5 @@
 package bobi.blog.entities;
 
-import org.codehaus.groovy.util.StringUtil;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;

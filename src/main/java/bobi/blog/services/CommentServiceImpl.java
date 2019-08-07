@@ -1,9 +1,9 @@
 package bobi.blog.services;
 
-import bobi.blog.models.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Comment;
 import bobi.blog.entities.User;
+import bobi.blog.models.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
