@@ -38,7 +38,6 @@ public class CategoryController {
     public String list(Model model) {
 
         List<Category> categories = this.categoryService.getAllCategories();
-        categories.stream().sorted(Comparator.comparingInt(Category::getId)).collect(Collectors.toList());
 
         model.addAttribute("categories", categories);
         model.addAttribute("view", "admin/category/list");
