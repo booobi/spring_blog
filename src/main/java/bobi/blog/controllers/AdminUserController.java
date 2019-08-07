@@ -1,6 +1,7 @@
 package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.UserEditBingingModel;
+import bobi.blog.config.Consts;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
 import bobi.blog.services.RoleService;
@@ -37,7 +38,7 @@ public class AdminUserController {
         model.addAttribute("users", users);
         model.addAttribute("view", "admin/user/list");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @GetMapping("/edit/{id}")
@@ -49,7 +50,7 @@ public class AdminUserController {
         model.addAttribute("roles", roles);
         model.addAttribute("view", "admin/user/edit");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/edit/{id}")
@@ -68,7 +69,7 @@ public class AdminUserController {
         model.addAttribute("user", user);
         model.addAttribute("view", "admin/user/delete");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/delete/{id}")

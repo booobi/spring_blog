@@ -1,5 +1,6 @@
 package bobi.blog.controllers;
 
+import bobi.blog.config.Consts;
 import bobi.blog.entities.Tag;
 import bobi.blog.services.TagService;
 import javassist.NotFoundException;
@@ -26,7 +27,7 @@ public class TagController {
         model.addAttribute("tag", tag);
         model.addAttribute("view", "tag/articles");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
 }

@@ -1,6 +1,7 @@
 package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.CategoryBindingModel;
+import bobi.blog.config.Consts;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.services.ArticleService;
@@ -42,14 +43,14 @@ public class CategoryController {
         model.addAttribute("categories", categories);
         model.addAttribute("view", "admin/category/list");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("view", "admin/category/create");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/create")
@@ -74,7 +75,7 @@ public class CategoryController {
         model.addAttribute("category", category);
         model.addAttribute("view", "admin/category/edit");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/edit/{id}")
@@ -98,7 +99,7 @@ public class CategoryController {
         model.addAttribute("category", category);
         model.addAttribute("view", "admin/category/delete");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/delete/{id}")

@@ -1,5 +1,6 @@
 package bobi.blog.controllers;
 
+import bobi.blog.config.Consts;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.services.CategoryService;
@@ -29,7 +30,7 @@ public class HomeController {
         model.addAttribute("categories", categories);
         model.addAttribute("view", "home/index");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @GetMapping("/category/{id}")
@@ -42,7 +43,7 @@ public class HomeController {
         model.addAttribute("category", category);
         model.addAttribute("view", "home/list-articles");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @GetMapping("/error/403")
@@ -50,6 +51,6 @@ public class HomeController {
 
         model.addAttribute("view", "error/403");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 }

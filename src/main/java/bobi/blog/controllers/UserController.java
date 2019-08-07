@@ -1,6 +1,7 @@
 package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.UserBindingModel;
+import bobi.blog.config.Consts;
 import bobi.blog.entities.User;
 import bobi.blog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class UserController {
     public String register(Model model) {
         model.addAttribute("view", "user/register");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("/register")
@@ -45,7 +46,7 @@ public class UserController {
     public String login(Model model) {
         model.addAttribute("view", "user/login");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -68,6 +69,6 @@ public class UserController {
 
         model.addAttribute("user", user);
         model.addAttribute("view", "user/profile");
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 }

@@ -2,6 +2,7 @@ package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
+import bobi.blog.config.Consts;
 import bobi.blog.entities.*;
 import bobi.blog.services.*;
 import javassist.NotFoundException;
@@ -45,7 +46,7 @@ public class ArticleController {
         model.addAttribute("categories", categories);
         model.addAttribute("view", "article/create");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("article/create")
@@ -73,7 +74,7 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("view", "article/details");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("article/{id}")
@@ -103,7 +104,7 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("view", "article/edit");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("article/edit/{id}")
@@ -132,7 +133,7 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("view", "article/delete");
 
-        return "base-layout";
+        return Consts.BASE_LAYOUT;
     }
 
     @PostMapping("article/delete/{id}")
