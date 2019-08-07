@@ -40,6 +40,8 @@ public class ArticleServiceImp implements ArticleService {
         article.setContent(articleBindingModel.getContent());
         article.setCategory(category);
         article.setTags(tags);
+
+        this.articleRepository.saveAndFlush(article);
     }
 
     @Override
