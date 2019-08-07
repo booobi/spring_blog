@@ -35,25 +35,26 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerProcess(UserBindingModel userBindingModel) {
-        if(!userBindingModel.getPassword().equals(userBindingModel.getConfirmPassword())) {
-            return "redirect:/register";
-        }
+    public String registerProcess(UserBindingModel userBindingModel) throws Exception {
         this.userService.register(userBindingModel);
+
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String login(Model model){
+    public String login(Model model) {
         model.addAttribute("view", "user/login");
+
         return "base-layout";
     }
 
-    @RequestMapping(value="/logout", method = RequestMethod.GET)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+        //TODO: move (getAuthentication) to user service?
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //
 
-        if(auth != null) {
+        if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
 

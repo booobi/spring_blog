@@ -3,13 +3,15 @@ package bobi.blog.services;
 import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.User;
+import javassist.NotFoundException;
 
 public interface ArticleService {
 
-    //CRUD
-    void addArticle(ArticleBindingModel articleBindingModel, User author);
-    void editArticle(Article article, ArticleBindingModel articleBindingModel, CategoryService categoryService, TagService tagService);
-    void deleteArticle(Article article);
+    void create(ArticleBindingModel articleBindingModel, User author) throws NotFoundException;
 
-    Article getArticleById(Integer id);
+    void update(Article article, ArticleBindingModel articleBindingModel) throws NotFoundException;
+
+    void delete(Article article);
+
+    Article getArticleById(Integer id) throws NotFoundException;
 }

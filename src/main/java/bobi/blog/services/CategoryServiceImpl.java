@@ -3,6 +3,7 @@ package bobi.blog.services;
 import bobi.blog.bindingModels.CategoryBindingModel;
 import bobi.blog.entities.Category;
 import bobi.blog.repositories.CategoryRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,26 +25,30 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryById(Integer id) {
+    public Category getCategoryById(Integer id) throws NotFoundException {
+        if (!this.categoryRepository.exists(id)) {
+            throw new NotFoundException("Category not found!");
+        }
+
         return this.categoryRepository.findOne(id);
     }
 
     @Override
-    public void addCategory(CategoryBindingModel categoryBindingModel) {
+    public void create(CategoryBindingModel categoryBindingModel) {
         Category category = new Category(categoryBindingModel.getName());
 
         this.categoryRepository.saveAndFlush(category);
     }
 
     @Override
-    public void editCategory(Category category, CategoryBindingModel categoryBindingModel) {
+    public void update(Category category, CategoryBindingModel categoryBindingModel) {
         category.setName(categoryBindingModel.getName());
 
         this.categoryRepository.saveAndFlush(category);
     }
 
     @Override
-    public void deleteCategory(Category category) {
+    public void delete(Category category) {
         this.categoryRepository.delete(category);
     }
 }

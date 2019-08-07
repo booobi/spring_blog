@@ -1,11 +1,9 @@
 package bobi.blog.services;
 
 import bobi.blog.bindingModels.ArticleBindingModel;
-import bobi.blog.entities.Article;
-import bobi.blog.entities.Category;
-import bobi.blog.entities.Tag;
-import bobi.blog.entities.User;
+import bobi.blog.entities.*;
 import bobi.blog.repositories.ArticleRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +14,19 @@ public class ArticleServiceImp implements ArticleService {
     private final ArticleRepository articleRepository;
     private final CategoryService categoryService;
     private final TagService tagService;
+    private final CommentService commentService;
 
     @Autowired
-    public ArticleServiceImp(ArticleRepository articleRepository,
-                             CategoryService categoryService,
-                             TagService tagService) {
+    public ArticleServiceImp(ArticleRepository articleRepository, CategoryService categoryService, TagService tagService, CommentService commentService) {
         this.articleRepository = articleRepository;
         this.categoryService = categoryService;
         this.tagService = tagService;
+        this.commentService = commentService;
     }
 
+
     @Override
-    public void addArticle(ArticleBindingModel articleBindingModel, User author) {
+    public void create(ArticleBindingModel articleBindingModel, User author) throws NotFoundException {
         Category category = this.categoryService.getCategoryById(articleBindingModel.getCategoryId());
         Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
         Article article = new Article(articleBindingModel.getTitle(), articleBindingModel.getContent(), author, category, tags);
@@ -35,9 +34,9 @@ public class ArticleServiceImp implements ArticleService {
     }
 
     @Override
-    public void editArticle(Article article, ArticleBindingModel articleBindingModel, CategoryService categoryService, TagService tagService) {
-        Category category = categoryService.getCategoryById(articleBindingModel.getCategoryId());
-        Set<Tag> tags = tagService.findTagsFromString(articleBindingModel.getTagString());
+    public void update(Article article, ArticleBindingModel articleBindingModel) throws NotFoundException {
+        Category category = this.categoryService.getCategoryById(articleBindingModel.getCategoryId());
+        Set<Tag> tags = this.tagService.findTagsFromString(articleBindingModel.getTagString());
 
         article.setTitle(articleBindingModel.getTitle());
         article.setContent(articleBindingModel.getContent());
@@ -48,13 +47,24 @@ public class ArticleServiceImp implements ArticleService {
     }
 
     @Override
-    public void deleteArticle(Article article) {
-        //TODO: implement deletion of comments, tags
+    public void delete(Article article) {
+        //delete all comments
+        Set<Comment> comments = article.getComments();
+        for (Comment comment : comments) {
+            this.commentService.delete(comment);
+        }
+
         this.articleRepository.delete(article);
     }
 
     @Override
-    public Article getArticleById(Integer id) {
-        return this.articleRepository.getOne(id);
+    public Article getArticleById(Integer id) throws NotFoundException {
+        if (!this.articleRepository.exists(id)) {
+            throw new NotFoundException("Article not found!");
+        }
+
+        return this.articleRepository.findOne(id);
+
+
     }
 }

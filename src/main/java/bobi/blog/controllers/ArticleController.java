@@ -4,6 +4,7 @@ import bobi.blog.bindingModels.ArticleBindingModel;
 import bobi.blog.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.entities.*;
 import bobi.blog.services.*;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 public class ArticleController {
@@ -24,27 +24,17 @@ public class ArticleController {
     private final ArticleService articleService;
     private final UserService userService;
     private final CategoryService categoryService;
-    private final TagService tagService;
     private final CommentService commentService;
 
     @Autowired
     public ArticleController(ArticleService articleService,
                              UserService userService,
                              CategoryService categoryService,
-                             TagService tagService,
                              CommentService commentService) {
         this.articleService = articleService;
         this.userService = userService;
         this.categoryService = categoryService;
-        this.tagService = tagService;
         this.commentService = commentService;
-    }
-
-    //TODO: move this to user service
-    private boolean isUserAuthorOrAdmin(Article article) {
-        User user = this.userService.getCurrentUser();
-
-        return user.isAdmin() || user.isAuthor(article);
     }
 
     @GetMapping("/article/create")
@@ -60,21 +50,16 @@ public class ArticleController {
 
     @PostMapping("article/create")
     @PreAuthorize("isAuthenticated()")
-    public String createProcess(ArticleBindingModel articleBindingModel) {
+    public String createProcess(ArticleBindingModel articleBindingModel) throws NotFoundException {
         User author = this.userService.getCurrentUser();
-        this.articleService.addArticle(articleBindingModel, author);
+        this.articleService.create(articleBindingModel, author);
 
         return "redirect:/";
     }
 
     @GetMapping("article/{id}")
-    public String details(Model model, @PathVariable Integer id) {
-
+    public String details(Model model, @PathVariable Integer id) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
-
-        if (article == null) {
-            return "redirect:/";
-        }
 
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             User entityUser = this.userService.getCurrentUser();
@@ -92,34 +77,26 @@ public class ArticleController {
     }
 
     @PostMapping("article/{id}")
-    public String detailsCommentProcess(@PathVariable Integer id, ArticleCommentBindingModel articleCommentBindingModel) {
+    public String detailsCommentProcess(@PathVariable Integer id, ArticleCommentBindingModel articleCommentBindingModel) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
 
-        if (article == null) {
-            return "redirect:/";
-        }
-
-        this.commentService.addComment(article, articleCommentBindingModel, this.userService);
+        User author = this.userService.getCurrentUser();
+        this.commentService.addComment(article, articleCommentBindingModel, author);
 
         return "redirect:/article/" + id;
     }
 
     @GetMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String edit(Model model, @PathVariable Integer id) {
+    public String edit(Model model, @PathVariable Integer id) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
 
-        if (article == null) {
-            return "redirect:/";
-        }
-
-        if (!isUserAuthorOrAdmin(article)) {
+        if (!this.userService.isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
         List<Category> categories = this.categoryService.getAllCategories();
-
-        String tagString = article.getTags().stream().map(Tag::getName).collect(Collectors.joining(", "));
+        String tagString = article.getTagString();
 
         model.addAttribute("tags", tagString);
         model.addAttribute("categories", categories);
@@ -131,32 +108,24 @@ public class ArticleController {
 
     @PostMapping("article/edit/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel) {
+    public String editProcess(@PathVariable Integer id, ArticleBindingModel articleBindingModel) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
 
-        if (article == null) {
-            return "redirect:/";
-        }
-
-        if (!isUserAuthorOrAdmin(article)) {
+        if (!this.userService.isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
-        this.articleService.editArticle(article, articleBindingModel, categoryService, tagService);
+        this.articleService.update(article, articleBindingModel);
 
         return "redirect:/article/" + article.getId();
     }
 
     @GetMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String delete(Model model, @PathVariable Integer id) {
+    public String delete(Model model, @PathVariable Integer id) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
 
-        if (article == null) {
-            return "redirect:/";
-        }
-
-        if (!isUserAuthorOrAdmin(article)) {
+        if (!this.userService.isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
 
@@ -168,16 +137,14 @@ public class ArticleController {
 
     @PostMapping("article/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String deleteProcess(@PathVariable Integer id) {
+    public String deleteProcess(@PathVariable Integer id) throws NotFoundException {
         Article article = this.articleService.getArticleById(id);
 
-        if (article == null) {
-            return "redirect:/";
-        }
-
-        if (!isUserAuthorOrAdmin(article)) {
+        if (!this.userService.isUserAuthorOrAdmin(article)) {
             return "redirect:/article/" + id;
         }
+
+        this.articleService.delete(article);
 
         return "redirect:/";
     }

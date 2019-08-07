@@ -3,6 +3,7 @@ package bobi.blog.entities;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "articles")
@@ -101,5 +102,10 @@ public class Article {
     @Transient
     public String getSummary() {
         return this.content.substring(0, this.content.length() / 2) + "...";
+    }
+
+    @Transient
+    public String getTagString() {
+        return this.getTags().stream().map(Tag::getName).collect(Collectors.joining(", "));
     }
 }

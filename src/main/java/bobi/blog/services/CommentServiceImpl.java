@@ -7,15 +7,16 @@ import bobi.blog.entities.User;
 import bobi.blog.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Set;
 
 @Service
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository){
+    public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
@@ -25,9 +26,14 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void addComment(Article article, ArticleCommentBindingModel articleCommentBindingModel, UserService userService) {
-        User user = userService.getCurrentUser();
-        Comment comment = new Comment(article, articleCommentBindingModel.getContent(), user);
+    public void addComment(Article article, ArticleCommentBindingModel articleCommentBindingModel, User author) {
+
+        Comment comment = new Comment(article, articleCommentBindingModel.getContent(), author);
         this.commentRepository.saveAndFlush(comment);
+    }
+
+    @Override
+    public void delete(Comment comment) {
+        this.commentRepository.delete(comment);
     }
 }

@@ -3,6 +3,7 @@ package bobi.blog.controllers;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.services.CategoryService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +33,8 @@ public class HomeController {
     }
 
     @GetMapping("/category/{id}")
-    public String listArticles(@PathVariable Integer id, Model model){
+    public String listArticles(@PathVariable Integer id, Model model) throws NotFoundException {
         Category category = this.categoryService.getCategoryById(id);
-
-        if(category == null) {
-            return "redirect:/";
-        }
 
         Set<Article> articles = category.getArticles();
 
@@ -49,7 +46,7 @@ public class HomeController {
     }
 
     @GetMapping("/error/403")
-    public String accessDenied(Model model){
+    public String accessDenied(Model model) {
 
         model.addAttribute("view", "error/403");
 

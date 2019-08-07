@@ -2,6 +2,7 @@ package bobi.blog.controllers;
 
 import bobi.blog.entities.Tag;
 import bobi.blog.services.TagService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +20,8 @@ public class TagController {
 
 
     @GetMapping("/tag/{name}")
-    private String articlesWithTag(@PathVariable String name, Model model) {
+    private String articlesWithTag(@PathVariable String name, Model model) throws NotFoundException {
         Tag tag = this.tagService.getTagByName(name);
-
-        if(tag == null) {
-            return "redirect:/";
-        }
 
         model.addAttribute("tag", tag);
         model.addAttribute("view", "tag/articles");

@@ -5,6 +5,7 @@ import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
 import bobi.blog.services.ArticleService;
 import bobi.blog.services.CategoryService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,16 +58,16 @@ public class CategoryController {
             return "redirect:/admin/categories/create";
         }
 
-        this.categoryService.addCategory(categoryBindingModel);
+        this.categoryService.create(categoryBindingModel);
 
         return "redirect:/admin/categories/";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model) {
+    public String edit(@PathVariable Integer id, Model model) throws NotFoundException {
         Category category = this.categoryService.getCategoryById(id);
 
-        if(category == null) {
+        if (category == null) {
             return "redirect:/admin/categories/";
         }
 
@@ -77,26 +78,22 @@ public class CategoryController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editProcess(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) {
+    public String editProcess(@PathVariable Integer id, CategoryBindingModel categoryBindingModel) throws NotFoundException {
         Category category = this.categoryService.getCategoryById(id);
 
-        if(category == null) {
+        if (category == null) {
             return "redirect:/admin/categories/";
         }
-        this.categoryService.editCategory(category, categoryBindingModel);
+        this.categoryService.update(category, categoryBindingModel);
 
         return "redirect:/admin/categories/";
 
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id, Model model) {
+    public String delete(@PathVariable Integer id, Model model) throws NotFoundException {
 
         Category category = this.categoryService.getCategoryById(id);
-
-        if(category == null){
-            return "redirect:/admin/categories/";
-        }
 
         model.addAttribute("category", category);
         model.addAttribute("view", "admin/category/delete");
@@ -105,18 +102,14 @@ public class CategoryController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteProcess(@PathVariable Integer id) {
+    public String deleteProcess(@PathVariable Integer id) throws NotFoundException {
 
         Category category = this.categoryService.getCategoryById(id);
 
-        if(category == null){
-            return "redirect:/admin/categories/";
+        for (Article article : category.getArticles()) {
+            this.articleService.delete(article);
         }
-
-        for(Article article : category.getArticles()) {
-            this.articleService.deleteArticle(article);
-        }
-        this.categoryService.deleteCategory(category);
+        this.categoryService.delete(category);
 
         return "redirect:/admin/categories/";
     }
