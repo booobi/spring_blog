@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -83,10 +84,12 @@ public class UserServiceImpl implements UserService {
         }
         user.setFullName(userEditBingingModel.getFullName());
         user.setEmail(userEditBingingModel.getEmail());
-        
+
+        Set<Role> rolesToSet = new HashSet<>();
         for (Integer roleId : userEditBingingModel.getRoles()) {
-            user.addRole(this.roleService.getRoleById(roleId));
+            rolesToSet.add(this.roleService.getRoleById(roleId));
         }
+        user.setRoles(rolesToSet);
 
         this.userRepository.save(user);
     }
