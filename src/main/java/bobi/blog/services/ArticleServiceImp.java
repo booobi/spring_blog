@@ -7,6 +7,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -65,6 +66,13 @@ public class ArticleServiceImp implements ArticleService {
 
         return this.articleRepository.findOne(id);
 
+
+    }
+
+    @Override
+    public List<Article> getArticlesByCategory(Category category) {
+
+        return this.articleRepository.getAllByCategory(category);
 
     }
 }

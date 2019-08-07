@@ -1,9 +1,12 @@
 package bobi.blog.services;
 
 import bobi.blog.entities.Article;
+import bobi.blog.entities.Category;
 import bobi.blog.entities.User;
 import bobi.blog.models.bindingModels.ArticleBindingModel;
 import javassist.NotFoundException;
+
+import java.util.List;
 
 public interface ArticleService {
 
@@ -14,4 +17,5 @@ public interface ArticleService {
     void delete(Article article);
 
     Article getArticleById(Integer id) throws NotFoundException;
+    List<Article> getArticlesByCategory(Category category);
 }

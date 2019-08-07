@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 @Table(name = "articles")
 public class Article {
 
+    private Integer id;
     private String title;
     private String content;
     private User author;
@@ -29,8 +30,6 @@ public class Article {
 
     public Article() {
     }
-
-    private Integer id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
