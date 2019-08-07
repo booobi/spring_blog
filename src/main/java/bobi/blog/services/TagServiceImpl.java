@@ -38,14 +38,16 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Set<Tag> findTagsFromString(String tagString) throws NotFoundException {
+    public Set<Tag> findTagsFromString(String tagString) {
         Set<Tag> tagSet = new HashSet<>();
 
         String[] tagNames = tagString.split(",\\s*");
 
+        Tag currentTag;
         for (String tagName : tagNames) {
-            Tag currentTag = this.getTagByName(tagName);
-            if (currentTag == null) {
+            try {
+                currentTag = this.getTagByName(tagName);
+            } catch (NotFoundException e) {
                 currentTag = new Tag(tagName);
                 this.tagRepository.saveAndFlush(currentTag);
             }
