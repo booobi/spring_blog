@@ -1,6 +1,6 @@
 package bobi.blog.controllers;
 
-import bobi.blog.bindingModels.UserEditBingingModel;
+import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;

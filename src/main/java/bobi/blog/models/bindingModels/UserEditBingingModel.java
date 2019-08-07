@@ -1,4 +1,4 @@
-package bobi.blog.bindingModels;
+package bobi.blog.models.bindingModels;
 
 import java.util.ArrayList;
 import java.util.List;

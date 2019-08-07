@@ -1,13 +1,13 @@
 package bobi.blog.services;
 
-import bobi.blog.bindingModels.UserBindingModel;
-import bobi.blog.bindingModels.UserEditBingingModel;
+import bobi.blog.models.bindingModels.UserBindingModel;
+import bobi.blog.models.bindingModels.UserEditBingingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Comment;
 import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
 import bobi.blog.repositories.UserRepository;
-import bobi.blog.viewModels.UserViewModel;
+import bobi.blog.models.viewModels.UserViewModel;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setFullName(userEditBingingModel.getFullName());
         user.setEmail(userEditBingingModel.getEmail());
-
+        
         for (Integer roleId : userEditBingingModel.getRoles()) {
             user.addRole(this.roleService.getRoleById(roleId));
         }

@@ -1,4 +1,4 @@
-package bobi.blog.bindingModels;
+package bobi.blog.models.bindingModels;
 
 public class CategoryBindingModel {
     private String name;

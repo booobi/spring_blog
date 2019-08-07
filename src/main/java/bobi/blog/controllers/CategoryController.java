@@ -1,6 +1,6 @@
 package bobi.blog.controllers;
 
-import bobi.blog.bindingModels.CategoryBindingModel;
+import bobi.blog.models.bindingModels.CategoryBindingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;

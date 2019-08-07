@@ -1,7 +1,7 @@
 package bobi.blog.controllers;
 
-import bobi.blog.bindingModels.ArticleBindingModel;
-import bobi.blog.bindingModels.ArticleCommentBindingModel;
+import bobi.blog.models.bindingModels.ArticleBindingModel;
+import bobi.blog.models.bindingModels.ArticleCommentBindingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.*;
 import bobi.blog.services.*;

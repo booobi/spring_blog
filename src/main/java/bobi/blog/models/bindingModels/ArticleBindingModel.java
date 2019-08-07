@@ -1,4 +1,4 @@
-package bobi.blog.bindingModels;
+package bobi.blog.models.bindingModels;
 
 import javax.validation.constraints.NotNull;
 

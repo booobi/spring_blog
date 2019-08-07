@@ -1,6 +1,6 @@
 package bobi.blog.controllers;
 
-import bobi.blog.bindingModels.UserBindingModel;
+import bobi.blog.models.bindingModels.UserBindingModel;
 import bobi.blog.config.Consts;
 import bobi.blog.entities.User;
 import bobi.blog.services.UserService;

@@ -1,4 +1,4 @@
-package bobi.blog.viewModels;
+package bobi.blog.models.viewModels;
 
 public class UserViewModel {
     private Integer id;
