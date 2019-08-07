@@ -1,15 +1,12 @@
 package bobi.blog.controllers;
 
 import bobi.blog.bindingModels.UserBindingModel;
-import bobi.blog.entities.Role;
 import bobi.blog.entities.User;
-import bobi.blog.services.RoleService;
 import bobi.blog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -3,8 +3,7 @@ package bobi.blog.controllers;
 import bobi.blog.bindingModels.CategoryBindingModel;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Category;
-import bobi.blog.repositories.ArticleRepository;
-import bobi.blog.repositories.CategoryRepository;
+import bobi.blog.services.ArticleService;
 import bobi.blog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,13 +23,13 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private CategoryService categoryService;
-    private ArticleRepository articleRepository;
+    private ArticleService articleService;
 
     @Autowired
     public CategoryController(CategoryService categoryService,
-                              ArticleRepository articleRepository) {
+                              ArticleService articleService) {
         this.categoryService = categoryService;
-        this.articleRepository = articleRepository;
+        this.articleService = articleService;
     }
 
     @GetMapping("/")
@@ -115,7 +114,7 @@ public class CategoryController {
         }
 
         for(Article article : category.getArticles()) {
-            this.articleRepository.delete(article);
+            this.articleService.deleteArticle(article);
         }
         this.categoryService.deleteCategory(category);
 
