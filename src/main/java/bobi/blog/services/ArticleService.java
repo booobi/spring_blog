@@ -17,5 +17,6 @@ public interface ArticleService {
     void delete(Article article);
 
     Article getArticleById(Integer id) throws NotFoundException;
+
     List<Article> getArticlesByCategory(Category category);
 }

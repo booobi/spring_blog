@@ -9,20 +9,17 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role {
-
     private Integer id;
     private String name;
     private Set<User> users;
 
-    public Role(){
+    public Role() {
         this.users = new HashSet<>();
-
     }
 
     public void setUsers(Set<User> users) {
         this.users = users;
     }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +46,7 @@ public class Role {
     }
 
     @Transient
-    public String getSimpleName(){
+    public String getSimpleName() {
         return StringUtils.capitalize(this.getName().substring(5).toLowerCase());
     }
 }

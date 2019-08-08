@@ -13,7 +13,6 @@ import org.springframework.ui.ModelMap;
 
 @Configuration
 public class BeanConfig {
-
     @Bean
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();

@@ -24,7 +24,8 @@ public class User {
         this.articles = new HashSet<>();
     }
 
-    public User(){}
+    public User() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,6 +107,4 @@ public class User {
     public boolean isAuthor(Article article) {
         return Objects.equals(this.getId(), article.getAuthor().getId());
     }
-
-
 }

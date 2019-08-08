@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-
     private CommentRepository commentRepository;
 
     @Autowired

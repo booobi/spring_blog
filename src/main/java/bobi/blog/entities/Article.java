@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "articles")
 public class Article {
-
     private Integer id;
     private String title;
     private String content;

@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
     private final CategoryRepository categoryRepository;
 
     @Autowired
@@ -36,14 +35,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void create(CategoryBindingModel categoryBindingModel) {
         Category category = new Category(categoryBindingModel.getName());
-
         this.categoryRepository.saveAndFlush(category);
     }
 
     @Override
     public void update(Category category, CategoryBindingModel categoryBindingModel) {
         category.setName(categoryBindingModel.getName());
-
         this.categoryRepository.saveAndFlush(category);
     }
 

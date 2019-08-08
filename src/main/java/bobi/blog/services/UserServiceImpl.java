@@ -44,12 +44,14 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NotFoundException("Invalid User ID!");
         }
+
         return user;
     }
 
     @Override
     public User getCurrentUser() {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return this.userRepository.findByEmail(principal.getUsername());
     }
 
@@ -70,7 +72,6 @@ public class UserServiceImpl implements UserService {
         for (Comment comment : comments) {
             this.commentService.delete(comment);
         }
-
         this.userRepository.delete(user);
     }
 
@@ -90,7 +91,6 @@ public class UserServiceImpl implements UserService {
             rolesToSet.add(this.roleService.getRoleById(roleId));
         }
         user.setRoles(rolesToSet);
-
         this.userRepository.save(user);
     }
 
@@ -120,8 +120,8 @@ public class UserServiceImpl implements UserService {
         user.addRole(userRole);
 
         this.userRepository.saveAndFlush(user);
-
         UserViewModel userViewModel = this.modelMapper.map(user, UserViewModel.class);
+
         return userViewModel;
     }
 }

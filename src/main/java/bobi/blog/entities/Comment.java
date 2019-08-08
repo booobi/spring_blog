@@ -16,7 +16,8 @@ public class Comment {
         this.author = author;
     }
 
-    public Comment(){}
+    public Comment() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

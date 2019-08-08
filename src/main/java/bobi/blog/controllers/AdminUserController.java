@@ -20,7 +20,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/users")
 public class AdminUserController {
-
     private UserService userService;
     private RoleService roleService;
 

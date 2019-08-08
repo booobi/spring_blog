@@ -20,9 +20,7 @@ public interface UserService {
 
     boolean isUserAuthorOrAdmin(Article article);
 
-
     List<User> getAllUsers();
-
 
     UserViewModel register(UserBindingModel bindingModel) throws Exception;
 }

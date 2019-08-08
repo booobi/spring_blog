@@ -7,7 +7,6 @@ import java.util.Set;
 @Entity
 @Table(name = "categories")
 public class Category {
-
     private Integer id;
     private String name;
     private Set<Article> articles;
@@ -17,7 +16,8 @@ public class Category {
         this.articles = new HashSet<>();
     }
 
-    public Category() {}
+    public Category() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

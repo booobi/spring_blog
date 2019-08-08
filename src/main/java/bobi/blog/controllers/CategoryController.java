@@ -21,7 +21,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/categories")
 public class CategoryController {
-
     private CategoryService categoryService;
     private ArticleService articleService;
 

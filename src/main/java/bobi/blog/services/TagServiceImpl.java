@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Service
 public class TagServiceImpl implements TagService {
-
     private TagRepository tagRepository;
 
     @Autowired
@@ -24,6 +23,7 @@ public class TagServiceImpl implements TagService {
         if (!this.tagRepository.exists(id)) {
             throw new NotFoundException("Tag not found!");
         }
+
         return this.tagRepository.findOne(id);
     }
 
@@ -34,6 +34,7 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             throw new NotFoundException("Tag not found!");
         }
+
         return tag;
     }
 

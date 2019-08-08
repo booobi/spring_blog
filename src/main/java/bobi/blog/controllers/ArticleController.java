@@ -27,7 +27,6 @@ import java.util.Set;
 
 @Controller
 public class ArticleController {
-
     private final ArticleService articleService;
     private final UserService userService;
     private final CategoryService categoryService;

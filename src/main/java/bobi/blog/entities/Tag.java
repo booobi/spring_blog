@@ -8,9 +8,7 @@ import java.util.Set;
 @Table(name = "tags")
 public class Tag {
     private Integer id;
-
     private String name;
-
     private Set<Article> articles;
 
     public Tag(String name) {
@@ -18,7 +16,8 @@ public class Tag {
         this.articles = new HashSet<>();
     }
 
-    public Tag(){}
+    public Tag() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

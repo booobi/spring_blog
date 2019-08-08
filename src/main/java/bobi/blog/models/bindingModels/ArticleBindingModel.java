@@ -3,7 +3,6 @@ package bobi.blog.models.bindingModels;
 import javax.validation.constraints.NotNull;
 
 public class ArticleBindingModel {
-
     @NotNull
     private String title;
     @NotNull
