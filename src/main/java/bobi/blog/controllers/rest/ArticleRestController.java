@@ -1,5 +1,6 @@
 package bobi.blog.controllers.rest;
 
+import bobi.blog.config.Consts;
 import bobi.blog.entities.Article;
 import bobi.blog.entities.Comment;
 import bobi.blog.models.viewModels.CommentViewModel;
@@ -17,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/rest/api")
+@RequestMapping(Consts.REST_SERVICES_URL)
 public class ArticleRestController {
     private final ArticleService articleService;
     private final ModelMapper modelMapper;
